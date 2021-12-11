@@ -1,0 +1,66 @@
+---
+title: "Lab3"
+author: "Zhuravel"
+date: "10 12 2021"
+output: html_document
+---
+```{r}
+options(repos="https://cran.rstudio.com" )
+```
+```{r}
+install.packages("pscl", repos = "https://cran.rstudio.com")
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##### Task 0. Встановимо в R пакет для web-scrappingу
+```{r}
+install.packages("rvest")
+library(rvest)
+```
+##### Task 1.Необхідно зчитати WEB сторінку з сайту IMDB.com. Для зчитування url використовується функція read_html
+```{r}
+HTML = read_html('http://www.imdb.com/search/title?count=100&release_date=2017,2017&title_type=feature')
+```
+
+##### Task 2. Необхідно створити data.frame «movies» з наступними даними: номер фільму (rank_data), назва фільму (title_data), тривалість (runtime_data). CSS селектори для зчитування необхідних даних: rank_data: «.text-primary», title_data: «.lister-item-header a», runtime_data: «.text-muted .runtime».
+
+```{r}
+rank_html <- html_nodes(HTML,'.text-primary') 
+rank_data <- html_text(rank_html) 
+rank_data <- as.numeric(rank_data)
+```
+
+```{r}
+title_html <- html_nodes(HTML,'.lister-item-header a')
+title_data <- html_text(title_html)
+```
+
+```{r}
+runtime_html <- html_nodes(HTML,'.text-muted .runtime')
+runtime_data <- html_text(runtime_html)
+runtime_data <- gsub(" min","",runtime_data)# removing mins and converting it to numerical
+runtime_data <- as.numeric(runtime_data)
+```
+
+```{r}
+df <- data.frame(Rank = rank_data, Title = title_data, Runtime = runtime_data, stringsAsFactors = FALSE )
+```
+### Питання
+
+
+##### Question 1. Виведіть перші 6 назв фільмів дата фрейму.
+```{r}
+head(df['Title'])
+```
+
+##### Question 2. Виведіть всі назви фільмів с тривалістю більше 120 хв.
+```{r}
+df[df['Runtime'] > 120, ]['Title']
+```
+##### Question 3. Скільки фільмів мають тривалість менше 100 хв?
+```{r}
+length(df[df['Runtime'] < 100, ]['Title'])
+```

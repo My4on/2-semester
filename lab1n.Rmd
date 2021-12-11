@@ -1,0 +1,49 @@
+---
+title: "Lab1"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Task 1
+```{r}
+writeLines('PATH="${RTOOLS40_HOME}\\usr\\bin;${PATH}"', con = "~/.Renviron")
+install.packages("xlsx", dependencies = TRUE, repos = 'http://cran.us.r-project.org')
+library(xlsx)
+MyData <- read.xlsx("C:/Users/Admin/Desktop/R/Lab1/lab1excel.xlsx",sheetIndex=2,header=TRUE)
+head(MyData)
+```
+
+```{r}
+library(xlsx)
+colIndex <- 2:3
+rowIndex <- 1:4
+myDataSubset <- read.xlsx("C:/Users/Admin/Desktop/R/Lab1/lab1excel.xlsx",sheetIndex=2,colIndex=colIndex,rowIndex=rowIndex )
+myDataSubset
+```
+
+## Task 2
+```{r}
+fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06hid.csv"
+download.file(fileUrl, destfile="./data/microdata.csv", method="curl")
+microData <- read.table("./data/microdata.csv", sep=",", header=TRUE)
+
+```
+##### myQuestion "скільки property мають value $1000000+"
+```{r}
+sum(!is.na(microData$VAL[microData$VAL==24]))
+```
+
+## Task 3
+```{r}
+install.packages("XML", dependencies = TRUE, repos = 'http://cran.us.r-project.org')
+library(XML)
+doc <-  xmlTreeParse("http://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Frestaurants.xml",useInternal = TRUE)
+```
+##### How many restaurants have zipcode 21231?
+
+```{r}
+sum(xpathSApply(xmlRoot(doc), "//zipcode", xmlValue)==21231)
+```
