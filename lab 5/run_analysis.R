@@ -1,4 +1,3 @@
-#check
 getwd()
 setwd("C:/Users/Admin/Documents")
 getwd()
